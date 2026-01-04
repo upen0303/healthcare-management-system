@@ -7,6 +7,7 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import createAdminUser from "./config/createAdmin.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import patientProfileRoutes from "./routes/patientProfileRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -34,7 +35,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/patient-profile", patientProfileRoutes);
-
+app.use("/api/admin", adminRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;
