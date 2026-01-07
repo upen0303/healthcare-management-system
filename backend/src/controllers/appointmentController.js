@@ -1,5 +1,7 @@
 import Appointment from "../models/Appointment.js";
+import { sendEmail } from "../services/emailService.js";
 import Doctor from "../models/Doctor.js";
+import User from "../models/User.js";
 
 // Patient books appointment
 export const bookAppointment = async (req, res) => {
@@ -14,6 +16,7 @@ export const bookAppointment = async (req, res) => {
         .json({ message: "Doctor not available for appointment" });
     }
 
+    //create appointment
     const appointment = await Appointment.create({
       patient: req.user._id,
       doctor: doctorId,
@@ -21,6 +24,25 @@ export const bookAppointment = async (req, res) => {
       appointmentTime,
       reason,
     });
+
+    // After appointment is created
+try {
+  const doctorProfile = await Doctor.findById(appointment.doctor).populate("userId", "email name");
+
+  await sendEmail({
+    to: doctorProfile.userId.email,
+    subject: "New Appointment Request",
+    html: `
+      <h3>Hello Dr. ${doctorProfile.userId.name}</h3>
+      <p>You have a new appointment request.</p>
+      <p><strong>Date:</strong> ${appointmentDate}</p>
+      <p><strong>Time:</strong> ${appointmentTime}</p>
+      <p>Please login to approve or reject the appointment.</p>
+    `,
+  });
+} catch (emailError) {
+  console.error("Email failed:", emailError.message);
+}
 
     res.status(201).json({
       message: "Appointment booked successfully",
@@ -68,6 +90,27 @@ export const updateAppointmentStatus = async (req, res) => {
     appointment.status = status;
     await appointment.save();
 
+    // Notify patient via email about status update
+    try {
+  const patientUser = await User.findById(appointment.patient);
+
+  await sendEmail({
+    to: patientUser.email,
+    subject: `Appointment ${status}`,
+    html: `
+      <h3>Hello ${patientUser.name}</h3>
+      <p>Your appointment has been <strong>${status.toUpperCase()}</strong>.</p>
+      <p><strong>Date:</strong> ${appointment.appointmentDate.toDateString()}</p>
+      <p><strong>Time:</strong> ${appointment.appointmentTime}</p>
+      <p>Thank you for using our Healthcare Management System.</p>
+    `,
+  });
+
+  console.log("✅ Appointment status email sent to patient");
+} catch (emailError) {
+  console.error("Email failed:", emailError.message);
+}
+
     res.json({
       message: `Appointment ${status} successfully`,
       appointment,
@@ -95,3 +138,5 @@ export const getPatientAppointments = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
