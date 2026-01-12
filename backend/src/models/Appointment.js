@@ -25,6 +25,18 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected", "completed"],
       default: "pending",
     },
+    statusHistory: [
+      {
+        status: {
+          type: String,
+          enum: ["pending", "approved", "rejected", "completed"],
+        },
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     reason: {
       type: String,
     },

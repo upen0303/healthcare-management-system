@@ -8,12 +8,36 @@ export const bookAppointment = async (req, res) => {
   try {
     const { doctorId, appointmentDate, appointmentTime, reason } = req.body;
 
+    // FUTURE DATE VALIDATION HERE
+    const selectedDate = new Date(appointmentDate);
+    const today = new Date();
+
+    if (selectedDate < today) {
+      return res.status(400).json({
+        message: "Appointment date must be in the future",
+      });
+    }
+
     // Check doctor exists and is approved
     const doctor = await Doctor.findById(doctorId);
     if (!doctor || doctor.status !== "approved") {
       return res
         .status(400)
         .json({ message: "Doctor not available for appointment" });
+    }
+
+    // Check for existing appointment at the same time
+    const existing = await Appointment.findOne({
+      doctor: doctorId,
+      appointmentDate,
+      appointmentTime,
+      status: { $ne: "rejected" },
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        message: "This time slot is already booked. Please choose another.",
+      });
     }
 
     //create appointment
@@ -23,6 +47,8 @@ export const bookAppointment = async (req, res) => {
       appointmentDate,
       appointmentTime,
       reason,
+      status: "pending",
+      statusHistory: [{ status: "pending" }],
     });
 
     // After appointment is created
@@ -88,6 +114,7 @@ export const updateAppointmentStatus = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
 
     appointment.status = status;
+    appointment.statusHistory.push({ status, date: new Date() });
     await appointment.save();
 
     // Notify patient via email about status update
