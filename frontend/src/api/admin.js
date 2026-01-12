@@ -17,3 +17,9 @@ export const rejectDoctor = async (doctorId) => {
   const res = await api.put(`/doctors/reject-doctor/${doctorId}`);
   return res.data;
 };
+
+// Get all appointments
+export const getAllAppointments = async () => {
+  const res = await api.get("/appointments/all");
+  return res.data;
+};
