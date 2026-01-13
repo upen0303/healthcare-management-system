@@ -15,8 +15,14 @@ export default function Login() {
     setError("");
 
     try {
-      await login(email, password);
-      navigate("/");
+      const loggedInUser = await login(email, password);
+      if (loggedInUser.role === "patient") {
+        navigate("/patient/home");
+      } else if (loggedInUser.role === "doctor") {
+        navigate("/doctor");
+      } else {
+        navigate("/admin");
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed, try again"

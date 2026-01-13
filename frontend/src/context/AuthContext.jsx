@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     api.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${res.data.token}`;
+
+    return res.data.user;
   };
 
   // Logout function

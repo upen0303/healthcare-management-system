@@ -44,7 +44,7 @@ router.get("/all", protect, authorizeRoles("admin"), getAllDoctors);
 router.get("/pending", protect, authorizeRoles("admin"), getPendingDoctors);
 
 // Get approved doctors
-router.get("/approved", protect, authorizeRoles("admin"), getApprovedDoctors);
+router.get("/approved", protect, authorizeRoles("admin", "patient"), getApprovedDoctors);
 
 // Get rejected doctors
 router.get("/rejected", protect, authorizeRoles("admin"), getRejectedDoctors);

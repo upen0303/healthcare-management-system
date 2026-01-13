@@ -4,6 +4,8 @@ import PatientDashboard from "./pages/PatientDashboard";
 import DoctorDashboard from "./pages/DoctorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import PatientHome from "./pages/PatientHome";
+import BookAppointment from "./pages/BookAppointment";
 import { useAuth } from "./context/AuthContext";
 
 function RoleRedirect() {
@@ -59,6 +61,30 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/patient/home"
+          element={
+            <ProtectedRoute roles={["patient"]}>
+              <PatientHome />
+            </ProtectedRoute>
+          }
+        />  
+        <Route
+          path="/patient/dashboard"
+          element={
+            <ProtectedRoute roles={["patient"]}>
+              <PatientDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/patient/book"
+          element={
+            <ProtectedRoute roles={["patient"]}>
+              <BookAppointment />
+            </ProtectedRoute>
+          }
+        />  
       </Routes>
     </BrowserRouter>
   );
