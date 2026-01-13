@@ -44,7 +44,7 @@ export default function AdminDashboard() {
     fetchDoctors();
   };
 
-  if (loading) return <p className="p-6">Loading doctors...</p>;
+  if (loading) return <p className="p-6 text-gray-600">Loading doctors...</p>;
 
   return (
     <div className="p-6">

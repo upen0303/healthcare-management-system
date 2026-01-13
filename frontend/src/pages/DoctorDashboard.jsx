@@ -9,6 +9,7 @@ export default function DoctorDashboard() {
   const { logout } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(null);
 
   const fetchAppointments = async () => {
     try {
@@ -25,12 +26,21 @@ export default function DoctorDashboard() {
     fetchAppointments();
   }, []);
 
-  const handleUpdate = async (id, status) => {
-    await updateAppointmentStatus(id, status);
-    fetchAppointments();
-  };
+const handleUpdate = async (id, status) => {
+  setActionLoading(id);
 
-  if (loading) return <p className="p-6">Loading appointments...</p>;
+  try {
+    await updateAppointmentStatus(id, status);
+    await fetchAppointments();
+  } catch (err) {
+    console.error("Failed to update appointment");
+  } finally {
+    setActionLoading(null);
+  }
+};
+
+
+  if (loading) return <p className="p-6 text-gray-600">Loading appointments...</p>;
 
   return (
     <div className="p-6">
@@ -70,15 +80,25 @@ export default function DoctorDashboard() {
                   <>
                     <button
                       onClick={() => handleUpdate(apt._id, "approved")}
-                      className="bg-green-500 text-white px-3 py-1 rounded"
+                      disabled={actionLoading === apt._id}
+                      className={`px-3 py-1 rounded text-white ${
+                        actionLoading === apt._id
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-500 hover:bg-green-600"
+                      }`}
                     >
-                      Approve
+                      {actionLoading === apt._id ? "Processing..." : "Approve"}
                     </button>
                     <button
                       onClick={() => handleUpdate(apt._id, "rejected")}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
+                      disabled={actionLoading === apt._id}
+                      className={`px-3 py-1 rounded text-white ${
+                        actionLoading === apt._id
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-red-500 hover:bg-red-600"
+                      }`}
                     >
-                      Reject
+                      {actionLoading === apt._id ? "Processing..." : "Reject"} 
                     </button>
                   </>
                 )}

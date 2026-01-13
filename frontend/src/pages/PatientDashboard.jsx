@@ -27,7 +27,7 @@ export default function PatientDashboard() {
     fetchAppointments();
   };
 
-  if (loading) return <p className="p-6">Loading appointments...</p>;
+  if (loading) return <p className="p-6 text-gray-600">Loading appointments...</p>;
 
   return (
     <div className="p-6">
