@@ -166,4 +166,26 @@ export const getPatientAppointments = async (req, res) => {
   }
 };
 
+// Admin views all appointments
+export const getAllAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find()
+      .populate("patient", "name email")
+      .populate({
+        path: "doctor",
+        populate: { path: "userId", select: "name email" },
+      })
+      .sort({ createdAt: -1 });
+
+    res.json({
+      total: appointments.length,
+      appointments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 

@@ -3,6 +3,7 @@ import {
   addDoctor,
   approveDoctor,
   rejectDoctor,
+  getMyDoctorProfile,
   getAllDoctors,
   getPendingDoctors,
   getApprovedDoctors,
@@ -48,4 +49,15 @@ router.get("/approved", protect, authorizeRoles("admin", "patient"), getApproved
 
 // Get rejected doctors
 router.get("/rejected", protect, authorizeRoles("admin"), getRejectedDoctors);
+
+router.get("/my-profile", protect, authorizeRoles("doctor"), getMyDoctorProfile);
+
+// Doctor creates own profile
+router.post(
+  "/create-profile",
+  protect,
+  authorizeRoles("doctor"),
+  addDoctor
+);
+
 export default router;

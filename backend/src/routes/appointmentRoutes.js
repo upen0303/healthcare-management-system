@@ -4,6 +4,7 @@ import {
   getDoctorAppointments,
   updateAppointmentStatus,
   getPatientAppointments,
+  getAllAppointments,
 } from "../controllers/appointmentController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
@@ -49,6 +50,18 @@ router.put(
   protect,
   authorizeRoles("doctor"),
   updateAppointmentStatus
+);
+
+/*
+  ADMIN ROUTES
+*/
+
+// Admin views all appointments
+router.get(
+  "/all",
+  protect,
+  authorizeRoles("admin"),
+  getAllAppointments
 );
 
 export default router;

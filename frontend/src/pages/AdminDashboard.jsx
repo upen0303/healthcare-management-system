@@ -20,6 +20,8 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   };
+  const pendingDoctors = doctors.filter(d => d.status === "pending");
+
   const fetchAppointments = async () => {
     try {
       const data = await getAllAppointments();
@@ -60,6 +62,46 @@ export default function AdminDashboard() {
           Logout
         </button>
       </div>
+      <h2 className="text-xl font-bold mt-6 mb-2">Pending Doctor Approvals</h2>
+
+      {pendingDoctors.length === 0 ? (
+        <p className="text-gray-500">No pending doctors.</p>
+      ) : (
+        <table className="w-full border mb-6">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border p-2">Name</th>
+              <th className="border p-2">Email</th>
+              <th className="border p-2">Specialization</th>
+              <th className="border p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+          {pendingDoctors.map(doc => (
+            <tr key={doc._id}>
+              <td className="border p-2">{doc.userId?.name}</td>
+              <td className="border p-2">{doc.userId?.email}</td>
+              <td className="border p-2">{doc.specialization}</td>
+              <td className="border p-2 space-x-2">
+                <button
+                  onClick={() => handleApprove(doc._id)}
+                  className="bg-green-500 text-white px-3 py-1 rounded"
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() => handleReject(doc._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                  Reject
+                </button>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+      )}
 
       <table className="w-full border">
         <thead className="bg-gray-100">

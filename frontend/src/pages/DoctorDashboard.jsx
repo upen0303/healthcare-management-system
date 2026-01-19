@@ -5,11 +5,15 @@ import {
 } from "../api/doctor";
 import { useAuth } from "../context/AuthContext";
 
+import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
+
 export default function DoctorDashboard() {
   const { logout } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const navigate = useNavigate();
 
   const fetchAppointments = async () => {
     try {
@@ -24,6 +28,14 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     fetchAppointments();
+    const checkProfile  = async () => {
+      try {
+        await api.get("/doctors/my-profile");
+      } catch {
+        navigate("/doctor/profile");
+      }
+    };
+    checkProfile();
   }, []);
 
 const handleUpdate = async (id, status) => {

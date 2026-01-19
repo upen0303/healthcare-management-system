@@ -13,6 +13,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+import DoctorProfileForm from "./pages/DoctorProfileForm";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -68,6 +70,15 @@ export default function App() {
           element={
             <ProtectedRoute roles={["admin"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        {/* Doctor Profile Form */}
+        <Route
+          path="/doctor/profile"
+          element={
+            <ProtectedRoute roles={["doctor"]}>
+              <DoctorProfileForm />
             </ProtectedRoute>
           }
         />

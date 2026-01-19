@@ -1,32 +1,47 @@
 import Doctor from "../models/Doctor.js";
 import User from "../models/User.js";
 
+// Get logged-in doctor's profile
+export const getMyDoctorProfile = async (req, res) => {
+  const doctor = await Doctor.findOne({ userId: req.user._id });
+
+  if (!doctor) {
+    return res.status(404).json({ message: "Doctor profile not found" });
+  }
+
+  res.json({ doctor });
+};
+
 // Admin adds a new doctor
 export const addDoctor = async (req, res) => {
-  try {
-    const { userId, specialization, experience, phone, fees, timings } =
-      req.body;
+  const { specialization, experience, phone, fees, timings } = req.body;
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const doctor = await Doctor.create({
-      userId,
-      specialization,
-      experience,
-      phone,
-      fees,
-      timings,
-    });
-
-    res.status(201).json({
-      message: "Doctor profile created, waiting for approval",
-      doctor,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+  const user = await User.findById(req.user._id); // ✅ use token user
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
   }
+
+  const doctorExists = await Doctor.findOne({ userId: user._id });
+  if (doctorExists) {
+    return res.status(400).json({ message: "Profile already exists" });
+  }
+
+  const doctor = await Doctor.create({
+    userId: user._id,
+    specialization,
+    experience,
+    phone,
+    fees,
+    timings,
+    status: "pending",
+  });
+
+  res.status(201).json({
+    message: "Profile submitted for approval",
+    doctor,
+  });
 };
+
 
 // Admin approves doctor
 export const approveDoctor = async (req, res) => {
@@ -110,3 +125,5 @@ export const getRejectedDoctors = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
