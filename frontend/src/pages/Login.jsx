@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function Login() {
+export default function Login({ role }) {
   const { login } = useAuth();
   const navigate = useNavigate(); 
     
@@ -16,6 +16,14 @@ export default function Login() {
 
     try {
       const loggedInUser = await login(email, password);
+
+      // 🔒 Role mismatch protection
+      if (role && loggedInUser.role !== role) {
+        setError(`You are not allowed to login as ${role}`);
+        return;
+      }
+
+      // ✅ Role-based redirect
       if (loggedInUser.role === "patient") {
         navigate("/patient/home");
       } else if (loggedInUser.role === "doctor") {
@@ -39,7 +47,7 @@ export default function Login() {
         <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
         {error && (
-          <p className="text-red-500 text-sm mb-2">{error}</p>
+          <p className="text-red-500 text-sm mb-2 text-center">{error}</p>
         )}
 
         <input
@@ -47,7 +55,10 @@ export default function Login() {
           placeholder="Email"
           className="w-full p-2 border rounded mb-3"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError("");
+          }}
           required
         />
 
@@ -56,7 +67,10 @@ export default function Login() {
           placeholder="Password"
           className="w-full p-2 border rounded mb-4"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            setError("");
+          }}
           required
         />
 
@@ -66,6 +80,19 @@ export default function Login() {
         >
           Login
         </button>
+        {role !== "admin" && (
+          <p className="text-sm text-center">
+            New here?{" "}
+            <button
+              type="button"
+              onClick={() => navigate(`/register/${role}`)}
+              className="text-blue-600 underline"
+            >
+              Register
+            </button>
+          </p>
+    )}
+
       </form>
     </div>
   );

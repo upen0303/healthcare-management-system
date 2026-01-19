@@ -1,42 +1,41 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/login";
+
+import Landing from "./pages/Landing";
+import AuthPage from "./pages/AuthPage";
+import Register from "./pages/Register";
+
+import PatientHome from "./pages/PatientHome";
 import PatientDashboard from "./pages/PatientDashboard";
+import BookAppointment from "./pages/BookAppointment";
+
 import DoctorDashboard from "./pages/DoctorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
-import PatientHome from "./pages/PatientHome";
-import BookAppointment from "./pages/BookAppointment";
-import { useAuth } from "./context/AuthContext";
-
-function RoleRedirect() {
-  const { user } = useAuth();
-
-  if (!user) return <Login />;
-
-  if (user.role === "patient") return <PatientDashboard />;
-  if (user.role === "doctor") return <DoctorDashboard />;
-  if (user.role === "admin") return <AdminDashboard />;
-
-  return <Login />;
-}
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
 
+        {/* Public Pages */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/auth/:role" element={<AuthPage />} />
+        <Route path="/register/:role" element={<Register />} />
+
+
+        {/* Patient Routes */}
         <Route
-          path="/"
+          path="/patient/home"
           element={
-            <ProtectedRoute>
-              <RoleRedirect />
+            <ProtectedRoute roles={["patient"]}>
+              <PatientHome />
             </ProtectedRoute>
           }
         />
 
         <Route
-          path="/patient"
+          path="/patient/dashboard"
           element={
             <ProtectedRoute roles={["patient"]}>
               <PatientDashboard />
@@ -44,6 +43,16 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/patient/book"
+          element={
+            <ProtectedRoute roles={["patient"]}>
+              <BookAppointment />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Doctor Route */}
         <Route
           path="/doctor"
           element={
@@ -53,6 +62,7 @@ export default function App() {
           }
         />
 
+        {/* Admin Route */}
         <Route
           path="/admin"
           element={
@@ -61,30 +71,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/patient/home"
-          element={
-            <ProtectedRoute roles={["patient"]}>
-              <PatientHome />
-            </ProtectedRoute>
-          }
-        />  
-        <Route
-          path="/patient/dashboard"
-          element={
-            <ProtectedRoute roles={["patient"]}>
-              <PatientDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/patient/book"
-          element={
-            <ProtectedRoute roles={["patient"]}>
-              <BookAppointment />
-            </ProtectedRoute>
-          }
-        />  
+
       </Routes>
     </BrowserRouter>
   );

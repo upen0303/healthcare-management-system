@@ -31,7 +31,10 @@ export default function PatientHome() {
           </button>
 
           <button
-            onClick={logout}
+            onClick={() => {
+              logout();
+              navigate("/");
+            }}
             className="w-full bg-red-500 text-white py-2 rounded"
           >
             Logout
