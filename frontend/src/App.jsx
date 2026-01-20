@@ -22,6 +22,7 @@ export default function App() {
 
         {/* Public Pages */}
         <Route path="/" element={<Landing />} />
+        <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/:role" element={<AuthPage />} />
         <Route path="/register/:role" element={<Register />} />
 

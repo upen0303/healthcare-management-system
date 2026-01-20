@@ -51,7 +51,7 @@ export default function AdminDashboard() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
         <button
           onClick={() => {
             logout();
@@ -67,13 +67,13 @@ export default function AdminDashboard() {
       {pendingDoctors.length === 0 ? (
         <p className="text-gray-500">No pending doctors.</p>
       ) : (
-        <table className="w-full border mb-6">
+        <table className="w-full border mb-6 rounded overflow-hidden">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border p-2">Name</th>
-              <th className="border p-2">Email</th>
-              <th className="border p-2">Specialization</th>
-              <th className="border p-2">Actions</th>
+              <th className="border p-2 bg-gray-100">Name</th>
+              <th className="border p-2 bg-gray-100">Email</th>
+              <th className="border p-2 bg-gray-100">Specialization</th>
+              <th className="border p-2 bg-gray-100">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -103,14 +103,14 @@ export default function AdminDashboard() {
         </table>
       )}
 
-      <table className="w-full border">
+      <table className="w-full border rounded overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border p-2">Doctor Name</th>
-            <th className="border p-2">Email</th>
-            <th className="border p-2">Specialization</th>
-            <th className="border p-2">Status</th>
-            <th className="border p-2">Actions</th>
+            <th className="border p-2 bg-gray-100">Doctor Name</th>
+            <th className="border p-2 bg-gray-100">Email</th>
+            <th className="border p-2 bg-gray-100">Specialization</th>
+            <th className="border p-2 bg-gray-100">Status</th>
+            <th className="border p-2 bg-gray-100">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -145,14 +145,14 @@ export default function AdminDashboard() {
 
       /* Appointments Table */
       <h2 className="text-xl font-bold mt-8 mb-4">All Appointments</h2> 
-      <table className="w-full border">
+      <table className="w-full border rounded overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border p-2">Patient</th>
-            <th className="border p-2">Doctor</th>
-            <th className="border p-2">Date</th>
-            <th className="border p-2">Time</th>
-            <th className="border p-2">Status</th>
+            <th className="border p-2 bg-gray-100">Patient</th>
+            <th className="border p-2 bg-gray-100">Doctor</th>
+            <th className="border p-2 bg-gray-100">Date</th>
+            <th className="border p-2 bg-gray-100">Time</th>
+            <th className="border p-2 bg-gray-100">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -162,7 +162,21 @@ export default function AdminDashboard() {
               <td className="border p-2">{apt.doctor?.userId?.name || "N/A"}</td>
               <td className="border p-2">{new Date(apt.appointmentDate).toDateString()}</td>
               <td className="border p-2">{apt.appointmentTime}</td>
-              <td className="border p-2 capitalize">{apt.status}</td>
+              <td className="border p-2 ">
+                <span
+                className={`px-3 py-1 rounded text-white text-sm ${
+                  apt.status === "approved"
+                    ? "bg-green-500"
+                    : apt.status === "pending"
+                    ? "bg-yellow-500"
+                    : apt.status === "rejected"
+                    ? "bg-red-500"
+                    : "bg-gray-500"
+                }`}
+                >
+                  {apt.status}
+                </span>
+              </td>
             </tr>
           ))}
         </tbody>

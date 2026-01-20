@@ -32,7 +32,7 @@ export default function PatientDashboard() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Patient Dashboard</h1>
+        <h1 className="text-2xl font-bold mb-6">Patient Dashboard</h1>
         <button
           onClick={() => {
             logout();
@@ -44,15 +44,15 @@ export default function PatientDashboard() {
         </button>
       </div>
 
-      <table className="w-full border">
+      <table className="w-full border rounded overflow-hidden">
         <thead className="bg-gray-100">
           <tr>
-            <th className="border p-2">Doctor</th>
-            <th className="border p-2">Specialization</th>
-            <th className="border p-2">Date</th>
-            <th className="border p-2">Time</th>
-            <th className="border p-2">Status</th>
-            <th className="border p-2">Actions</th>
+            <th className="border p-2 bg-gray-100">Doctor</th>
+            <th className="border p-2 bg-gray-100">Specialization</th>
+            <th className="border p-2 bg-gray-100">Date</th>
+            <th className="border p-2 bg-gray-100">Time</th>
+            <th className="border p-2 bg-gray-100">Status</th>
+            <th className="border p-2 bg-gray-100">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +68,21 @@ export default function PatientDashboard() {
                 {new Date(apt.appointmentDate).toDateString()}
               </td>
               <td className="border p-2">{apt.appointmentTime}</td>
-              <td className="border p-2 capitalize">{apt.status}</td>
+              <td className="border p-2">
+                <span
+                  className={`px-3 py-1 rounded text-white text-sm ${
+                    apt.status === "approved"
+                      ? "bg-green-500"
+                      : apt.status === "pending"
+                      ? "bg-yellow-500"
+                      : apt.status === "rejected"
+                      ? "bg-red-500"
+                      : "bg-gray-500"
+                  }`}
+                >
+                  {apt.status}
+                </span>
+              </td>
               <td className="border p-2">
                 {apt.status === "pending" && (
                   <button
